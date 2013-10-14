@@ -7,6 +7,8 @@ from django.db import models
 from .utils.modules import try_import, get_classes
 from .errors import NoConnectionError, MessageSendingError
 from .conf import settings
+from taggit.managers import TaggableManager
+from rapidsms.contrib.locations.models import Location
 
 
 class ExtensibleModelBase(models.base.ModelBase):
@@ -94,6 +96,11 @@ class ContactBase(models.Model):
         "The language which this contact prefers to communicate in, as "
         "a W3C language tag. If this field is left blank, RapidSMS will "
         "default to: " + settings.LANGUAGE_CODE)
+    active = models.BooleanField(default=True)
+    tags = TaggableManager()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    district=models.ForeignKey(Location,null=True,blank=True)
 
     class Meta:
         abstract = True

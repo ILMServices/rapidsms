@@ -53,7 +53,7 @@
 		<tbody>{% if message_log %}{% for msg in message_log %}
 			<tr class="{{ msg.direction }}">
 				<td>
-					{{ msg.identity }}{% ifequal msg.direction "in" %}
+					{{ msg.identity }}{% ifequal msg.direction in %}
 					<span title="Incoming (You sent this message to RapidSMS)">&raquo;</span>{% endifequal %}{% ifequal msg.direction "out" %}
 					<span title="Outgoing (You received this message from RapidSMS)">&laquo;</span>{% endifequal %}
 				</td>

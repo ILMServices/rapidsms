@@ -34,7 +34,7 @@
 			<div id="header">
 				<div id="branding">
 					<h1>
-						<a title="{% trans "Return to the Dashboard" %}" href="{% url rapidsms-dashboard %}">
+						<a title="{% trans "Return to the Dashboard" %}" href="{% url "dashboard" %}">
 							<span>RapidSMS</span>
 						</a>
 					</h1>
@@ -42,8 +42,8 @@
 
 				{% block auth %}
 				<div id="auth">{% if user.is_authenticated %}
-					<a href="{% url rapidsms-logout %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
-					<a href="{% url rapidsms-login %}">{% trans "Log in" %}</a>{% endif %}
+					<a href="{% url "logout" %}">{% trans "Log out" %} {{ user.username }}</a>{% else %}
+					<a href="{% url "login" %}">{% trans "Log in" %}</a>{% endif %}
 				</div>
 				{% endblock %}
 
@@ -60,12 +60,7 @@
 			</div>
 			{% endblock %}
 
-			{% block breadcrumbs %}{% if breadcrumbs %}
-			<div id="breadcrumbs">{% for caption, url in breadcrumbs %}
-				<a href="{{ url }}">{{ caption }}</a>{% if not forloop.last %}
-				<span>&raquo;</span>{% endif %}{% endfor %}
-			</div>{% endif %}
-			{% endblock %}
+
 
 			<div id="inner">
 				{% block content %}{% endblock %}

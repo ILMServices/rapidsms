@@ -7,7 +7,41 @@ from django.db import models
 from django.utils.html import escape
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from rapidsms.models import ExtensibleModelBase
+#from rapidsms.models import ExtensibleModelBase
+import rapidsms
+from django.conf import settings
+from rapidsms.utils.modules import try_import, get_classes
+
+class ExtensibleModelBase(models.base.ModelBase):
+    def __new__(cls, name, bases, attrs):
+        try:
+            app_label = attrs['Meta'].app_label
+        except (KeyError, AttributeError):
+            module_name = attrs["__module__"]
+            app_label = module_name.split('.')[-2]
+        extensions = _find_extensions(app_label, name)
+        bases = tuple(extensions) + bases
+
+        return super(ExtensibleModelBase, cls).__new__(
+            cls, name, bases, attrs)
+
+
+def _find_extensions(app_label, model_name):
+    ext = []
+
+    suffix = "extensions.%s.%s" % (
+        app_label, model_name.lower())
+    modules = filter(None, [
+        try_import("%s.%s" % (app_name, suffix))
+        for app_name in settings.INSTALLED_APPS ])
+
+    for module in modules:
+        for cls in get_classes(module, models.Model):
+            #check for duplicate base classes
+            if cls not in ext:
+                ext.append(cls)
+
+    return ext
 
 
 class Point(models.Model):
@@ -38,6 +72,7 @@ class LocationType(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, primary_key=True)
 
+
     def __unicode__(self):
         return self.name
 
@@ -53,6 +88,9 @@ class Location(models.Model):
 
     name = models.CharField(max_length=100)
     point = models.ForeignKey(Point, null=True, blank=True)
+    status = models.NullBooleanField(default=True,null=True,blank=True)
+    code = models.CharField(max_length=100, blank=False, null=False)
+    is_active = models.NullBooleanField(default=True,null=True,blank=True)
 
     parent_type = models.ForeignKey(ContentType, null=True, blank=True)
     parent_id   = models.PositiveIntegerField(null=True, blank=True)
