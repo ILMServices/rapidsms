@@ -157,6 +157,7 @@ class ConnectionBase(models.Model):
     backend  = models.ForeignKey(Backend)
     identity = models.CharField(max_length=100)
     contact  = models.ForeignKey(Contact, null=True, blank=True)
+    tags = TaggableManager()
 
     class Meta:
         abstract = True
