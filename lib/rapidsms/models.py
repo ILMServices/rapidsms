@@ -101,6 +101,10 @@ class ContactBase(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     district=models.ForeignKey(Location,null=True,blank=True)
+    location=models.CharField(max_length=50,null=True,blank=True)
+    age=models.IntegerField(max_length=4,null=True,blank=True)
+    opted_in=models.NullBooleanField()
+
 
     class Meta:
         abstract = True
